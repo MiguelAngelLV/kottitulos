@@ -21,11 +21,15 @@ class TuSubtitulo : SubtitleService {
 
         val showId = show.attr("href").substringAfterLast("/")
 
-        val episodes = Jsoup.connect("https://www.tusubtitulo.com/ajax_loadShow.php")
+        val response = Jsoup.connect("https://www.tusubtitulo.com/ajax_loadShow.php")
                 .data("show", showId)
                 .data("season", "${episode.season}")
-                .get()
-                .select("table:contains(${episode.season}x${episode.episode.pad(2)})")
+                .header("X-Requested-With", "XMLHttpRequest")
+                .execute()
+
+        val cookies = response.cookies()
+        val episodes = response
+                .parse().select("table:contains(${episode.season}x${episode.episode.pad(2)})")
 
 
         if (episodes.isEmpty()) return null
@@ -40,12 +44,17 @@ class TuSubtitulo : SubtitleService {
 
 
         for (i in version+1 until versions.size) {
-            if (versions[i].text().contains("Español") && versions[i].select("a").isNotEmpty())
-                return Jsoup.connect(versions[i].select("a")
-                        .first().absUrl("href"))
+            if (versions[i].text().contains("Español") && versions[i].select("a").isNotEmpty()) {
+                val url = versions[i].select("a").first().absUrl("href")
+
+                return Jsoup.connect(url)
+                        .referrer(show.absUrl("href"))
+                        .cookies(cookies)
                         .execute()
                         .charset("ISO-8859-1")
                         .body()
+
+            }
 
             if (versions[i].text().contains("Versión"))
                 return null
