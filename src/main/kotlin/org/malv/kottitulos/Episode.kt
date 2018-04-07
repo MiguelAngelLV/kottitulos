@@ -11,7 +11,7 @@ data class Episode(val show: String, val episode: Int, val season: Int, val grou
         fun create(filename: String) : Episode? {
 
 
-            val name = filename
+            val name = filename.substringAfterLast('/')
                     .substringBeforeLast('.')
                     .replace('.', ' ')
                     .toLowerCase()

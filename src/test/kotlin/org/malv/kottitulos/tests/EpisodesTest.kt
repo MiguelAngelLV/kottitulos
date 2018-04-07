@@ -57,6 +57,17 @@ class EpisodesTest {
         assertEquals(11, ep5.season)
         assertEquals(19, ep5.episode)
         assertEquals("plutonium", ep5.group)
+
+
+
+
+        val ep6 = Episode.create("/path/to/file/The.Big.Bang.Theory.S11E19.1080p.HDTV.x264-PLUTONiUM.mkv") ?: return fail()
+
+        assertEquals("the big bang theory", ep6.show)
+        assertEquals(11, ep6.season)
+        assertEquals(19, ep6.episode)
+        assertEquals("plutonium", ep6.group)
+        assertEquals("/path/to/file/The.Big.Bang.Theory.S11E19.1080p.HDTV.x264-PLUTONiUM", ep6.filename)
     }
 
 
