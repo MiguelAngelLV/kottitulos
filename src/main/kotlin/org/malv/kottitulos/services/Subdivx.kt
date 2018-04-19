@@ -63,7 +63,4 @@ class Subdivx : SubtitleService{
 
     }
 
-    companion object {
-
-    }
 }
