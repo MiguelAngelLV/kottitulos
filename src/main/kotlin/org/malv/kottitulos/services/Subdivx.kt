@@ -6,9 +6,12 @@ import org.malv.kottitulos.Episode
 import org.malv.kottitulos.pad
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
+import java.nio.charset.Charset
+import java.util.zip.ZipInputStream
 
-class Subdivx : SubtitleService{
 
+class Subdivx : SubtitleService {
 
 
     override fun find(episode: Episode): String? {
@@ -28,26 +31,42 @@ class Subdivx : SubtitleService{
                 .forEach {
 
                     val downloads = it.select("a[target]")
-                    val subtitule = unrar(downloads.first().absUrl("href"))
+                    val subtitule = download(downloads.first().absUrl("href"))
 
                     if (subtitule != null) return subtitule
 
-        }
+                }
 
 
         return null
     }
 
 
+    fun download(download: String): String? {
 
-    fun unrar(download: String) : String? {
-        val temp = File.createTempFile("subtitle", ".rar")
-        val rar = Jsoup.connect(download)
+
+        val response = Jsoup.connect(download)
                 .ignoreContentType(true)
                 .execute()
-                .bodyAsBytes()
 
-        temp.writeBytes(rar)
+        val data = response.bodyAsBytes()
+
+
+
+        return when (response.contentType()) {
+            "application/x-rar-compressed" -> unrar(data)
+            "application/zip" -> unzip(data)
+            else -> null
+        }
+
+
+    }
+
+
+    fun unrar(data: ByteArray): String? {
+
+        val temp = File.createTempFile("subtitle", ".rar")
+        temp.writeBytes(data)
 
         val unrar = Archive(temp)
 
@@ -63,4 +82,31 @@ class Subdivx : SubtitleService{
 
     }
 
+    fun unzip(data: ByteArray): String? {
+        val charset = Charset.forName("iso-8859-1")
+
+        val temp = File.createTempFile("subtitle", ".zip")
+        temp.writeBytes(data)
+
+        val unzip = ZipInputStream(FileInputStream(temp), charset)
+
+        var entry = unzip.nextEntry ?: return null
+
+        while(!entry.name.endsWith(".srt"))
+            entry = unzip.nextEntry ?: return null
+
+
+
+        val bytes = ByteArray(1024)
+        val uncompressed = ByteArrayOutputStream()
+
+        var read = unzip.read(bytes)
+        while (read > -1) {
+            uncompressed.write(bytes, 0, read)
+            read = unzip.read(bytes)
+        }
+
+        return uncompressed.toString("iso-8859-1")
+
+    }
 }

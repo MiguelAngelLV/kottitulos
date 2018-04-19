@@ -33,4 +33,20 @@ class SubdivxTest {
     }
 
 
+    @Test
+    fun `Find subtitles in zip`() {
+
+        val subdivx = Subdivx()
+
+        val episode1 = Episode("silicon valley", 1, 5, "tbs", "")
+
+        val subtitle1 = subdivx.find(episode1) ?: return fail()
+
+        assert(subtitle1.startsWith("1"))
+        assert(subtitle1.contains('¿'))
+        assert(subtitle1.contains('á'))
+
+
+    }
+
 }
