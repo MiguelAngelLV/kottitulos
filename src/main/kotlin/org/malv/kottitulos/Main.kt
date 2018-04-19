@@ -1,5 +1,6 @@
 package org.malv.kottitulos
 
+import org.malv.kottitulos.services.Subdivx
 import org.malv.kottitulos.services.Subtitulamos
 import org.malv.kottitulos.services.TuSubtitulo
 
@@ -11,6 +12,7 @@ fun main(args: Array<String>) {
 
     downloader.addService(Subtitulamos())
     downloader.addService(TuSubtitulo())
+    downloader.addService(Subdivx())
 
 
 
