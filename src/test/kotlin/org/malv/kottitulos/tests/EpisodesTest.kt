@@ -38,7 +38,7 @@ class EpisodesTest {
         assertEquals("final space", ep3.show)
         assertEquals(1, ep3.season)
         assertEquals(6, ep3.episode)
-        assertEquals("ntb", ep3.group)
+        assertEquals("amzn", ep3.group)
 
 
 

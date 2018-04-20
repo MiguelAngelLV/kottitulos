@@ -7,8 +7,7 @@ data class Episode(val show: String, val episode: Int, val season: Int, val grou
         val ID = Regex("""s(\d{2})e(\d{2})""")
 
 
-
-        fun create(filename: String) : Episode? {
+        fun create(filename: String): Episode? {
 
 
             val name = filename.substringAfterLast('/')
@@ -22,17 +21,19 @@ data class Episode(val show: String, val episode: Int, val season: Int, val grou
             val season = result.groupValues[1].toInt()
             val episode = result.groupValues[2].toInt()
 
-            val show = name.substringBefore(id)
-                    .trim()
+            val show = name.substringBefore(id).trim()
 
 
-
-            val group = name.substringAfterLast('-')
+            val group = //Caso especial.
+                              // El grupo sería "tbs" pero los subtítulos siempre se etiquetan como "amzn"
+                    if (name.contains("amzn", true))
+                        "amzn"
+                    else name.substringAfterLast('-')
 
 
             return Episode(show = show,
                     season = season,
-                    episode =  episode,
+                    episode = episode,
                     group = group,
                     filename = filename.substringBeforeLast("."))
 
