@@ -1,7 +1,11 @@
 package org.malv.kottitulos
 
 import org.malv.kottitulos.services.SubtitleService
-import java.io.FileWriter
+import java.io.BufferedWriter
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
+
+
 
 
 class SubtitleDownloader {
@@ -33,7 +37,7 @@ class SubtitleDownloader {
 
 
     private fun download(subtitle: String, filename: String) {
-        val file = FileWriter("$filename.srt")
+        val file = BufferedWriter(OutputStreamWriter(FileOutputStream("$filename.srt"), "ISO-8859-1"))
         file.write(subtitle)
         file.close()
     }
