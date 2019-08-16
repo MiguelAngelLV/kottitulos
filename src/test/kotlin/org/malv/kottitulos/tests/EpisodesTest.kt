@@ -19,7 +19,7 @@ class EpisodesTest {
         assertEquals("silicon valley", ep1.show)
         assertEquals(5, ep1.season)
         assertEquals(1, ep1.episode)
-        assertEquals("tbs", ep1.group)
+        assert(ep1.groups.contains("tbs"))
 
 
 
@@ -29,7 +29,7 @@ class EpisodesTest {
         assertEquals("the last man on earth", ep2.show)
         assertEquals(4, ep2.season)
         assertEquals(9, ep2.episode)
-        assertEquals("tbs", ep2.group)
+        assert(ep2.groups.contains("tbs"))
 
 
 
@@ -38,7 +38,8 @@ class EpisodesTest {
         assertEquals("final space", ep3.show)
         assertEquals(1, ep3.season)
         assertEquals(6, ep3.episode)
-        assertEquals("amzn", ep3.group)
+        assert(ep3.groups.contains("amzn"))
+        assert(ep3.groups.contains("ntb"))
 
 
 
@@ -47,7 +48,7 @@ class EpisodesTest {
         assertEquals("future man", ep4.show)
         assertEquals(1, ep4.season)
         assertEquals(3, ep4.episode)
-        assertEquals("hybris", ep4.group)
+        assert(ep4.groups.contains("hybris"))
 
 
 
@@ -56,7 +57,7 @@ class EpisodesTest {
         assertEquals("the big bang theory", ep5.show)
         assertEquals(11, ep5.season)
         assertEquals(19, ep5.episode)
-        assertEquals("plutonium", ep5.group)
+        assert(ep5.groups.contains("plutonium"))
 
 
 
@@ -66,8 +67,18 @@ class EpisodesTest {
         assertEquals("the big bang theory", ep6.show)
         assertEquals(11, ep6.season)
         assertEquals(19, ep6.episode)
-        assertEquals("plutonium", ep6.group)
+        assert(ep6.groups.contains("plutonium"))
         assertEquals("/path/to/file/The.Big.Bang.Theory.S11E19.1080p.HDTV.x264-PLUTONiUM", ep6.filename)
+
+
+
+
+        val ep7 = Episode.create("iZombie.S04E10.1080p.WEB.x264-METCON.mkv") ?: return fail()
+
+        assertEquals("izombie", ep7.show)
+        assertEquals(4, ep7.season)
+        assertEquals(10, ep7.episode)
+        assert(ep7.groups.contains("metcon"))
     }
 
 

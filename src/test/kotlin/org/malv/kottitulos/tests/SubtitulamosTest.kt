@@ -14,7 +14,7 @@ class SubtitulamosTest {
 
         val subtitulamos = Subtitulamos()
 
-        val episode1 = Episode("the big bang theory", 3, 11, "dimension", "")
+        val episode1 = Episode("the big bang theory", 3, 11, "dimension")
 
         val subtitle1 = subtitulamos.find(episode1) ?: return fail()
 
@@ -23,11 +23,18 @@ class SubtitulamosTest {
         assert(subtitle1.contains('á'))
 
 
-        val episode2 = Episode("the big bang theory", 3, 80, "dimension", "")
+        val episode2 = Episode("the big bang theory", 3, 80, "dimension")
 
         val subtitle2 = subtitulamos.find(episode2)
 
         assertNull(subtitle2)
+
+
+
+        val episode3 = Episode("izombie", 4, 10, "metcon")
+        val subtitle3 = subtitulamos.find(episode3)
+
+        assertNull(subtitle3)
 
 
     }

@@ -14,7 +14,7 @@ class SubdivxTest {
 
         val subdivx = Subdivx()
 
-        val episode1 = Episode("the big bang theory", 3, 11, "dimension", "")
+        val episode1 = Episode("the big bang theory", 3, 11, "dimension")
 
         val subtitle1 = subdivx.find(episode1) ?: return fail()
 
@@ -23,7 +23,7 @@ class SubdivxTest {
         assert(subtitle1.contains('á'))
 
 
-        val episode2 = Episode("the big bang theory", 3, 80, "dimension", "")
+        val episode2 = Episode("the big bang theory", 3, 80, "dimension")
 
         val subtitle2 = subdivx.find(episode2)
 
@@ -38,7 +38,7 @@ class SubdivxTest {
 
         val subdivx = Subdivx()
 
-        val episode1 = Episode("silicon valley", 1, 5, "tbs", "")
+        val episode1 = Episode("silicon valley", 1, 5, "tbs")
 
         val subtitle1 = subdivx.find(episode1) ?: return fail()
 

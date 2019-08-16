@@ -5,7 +5,7 @@ import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.jsoup.Jsoup
 import org.malv.kottitulos.Episode
-
+import org.malv.kottitulos.containsAny
 
 
 class Subtitulamos : SubtitleService {
@@ -48,7 +48,7 @@ class Subtitulamos : SubtitleService {
         val versions = details.subList(spanish, details.size - 1)
 
         val groupVersions = versions.filter {
-            it.select(".version_name").text().contains(episode.group, true)
+            it.select(".version_name").text().containsAny(episode.groups, true)
             && it.select("a[href$=download]").isNotEmpty()
         }
 

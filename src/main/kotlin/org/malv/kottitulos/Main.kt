@@ -15,19 +15,27 @@ fun main(args: Array<String>) {
     downloader.addService(Subdivx())
 
 
+    var downloads = 0
+
+    val options = args.filter { it.startsWith("-") }
+    val files = args.filterNot { it.startsWith("-") }
+    verbose = options.contains("-v")
 
 
-    args.forEach { file ->
-        println("Analyzing $file")
+    files.forEach { file ->
 
         val episode = Episode.create(file)
+        println("Analyzing ${file.substringAfterLast("/")}: ")
+
 
         when {
             episode == null -> println("Invalid filename")
-            downloader.find(episode) -> println("Subtitle downloaded")
+            downloader.find(episode) -> { println("Subtitle downloaded"); downloads++ }
             else -> println("Subtitle not found")
         }
     }
+
+    println("Download $downloads/${files.size}")
 
 
 }

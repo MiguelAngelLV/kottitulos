@@ -2,6 +2,7 @@ package org.malv.kottitulos.services
 
 import org.jsoup.Jsoup
 import org.malv.kottitulos.Episode
+import org.malv.kottitulos.containsAny
 import org.malv.kottitulos.pad
 import java.io.File
 import java.sql.Connection
@@ -32,7 +33,7 @@ class TuSubtitulo : SubtitleService {
 
     private fun findCache(name: String): Int? {
 
-        val statement = database.prepareStatement("SELECT id FROM tusubtitulo WHERE name = ?")
+        val statement = database.prepareStatement("SELECT id FROM tusubtitulo WHERE name LIKE ?")
         statement.setString(1, name)
 
         val resultSet = statement.executeQuery()
@@ -53,7 +54,7 @@ class TuSubtitulo : SubtitleService {
                 .get()
                 .select("[href^=/show/]")
                 .forEach {
-                    statement.setString(1, it.text().toLowerCase())
+                    statement.setString(1, it.text().substringBeforeLast("(").trim().toLowerCase())
                     statement.setString(2, it.attr("href").substringAfterLast("/"))
                     statement.addBatch()
                 }
@@ -97,7 +98,7 @@ class TuSubtitulo : SubtitleService {
 
         val versions = episodes.select("tr + tr")
 
-        val version = versions.indexOfFirst { it.text().contains(episode.group, true) }
+        val version = versions.indexOfFirst { it.text().containsAny(episode.groups, true) }
 
         if (version == -1) return null
 

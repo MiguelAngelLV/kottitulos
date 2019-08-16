@@ -1,6 +1,14 @@
 package org.malv.kottitulos
 
-data class Episode(val show: String, val episode: Int, val season: Int, val group: String, val filename: String) {
+class Episode(val show: String, val episode: Int, val season: Int, group: String? = null, val filename: String = "") {
+
+
+    val groups = ArrayList<String>()
+
+    init {
+        if (group != null)
+            groups.add(group)
+    }
 
 
     companion object {
@@ -24,18 +32,27 @@ data class Episode(val show: String, val episode: Int, val season: Int, val grou
             val show = name.substringBefore(id).trim()
 
 
-            val group = //Caso especial.
-                              // El grupo sería "tbs" pero los subtítulos siempre se etiquetan como "amzn"
-                    if (name.contains("amzn", true))
-                        "amzn"
-                    else name.substringAfterLast('-')
 
 
-            return Episode(show = show,
+            val e = Episode(show = show,
                     season = season,
                     episode = episode,
-                    group = group,
                     filename = filename.substringBeforeLast("."))
+
+            val group =  name.substringAfterLast('-')
+
+            e.groups.add(group)
+
+
+            if (name.contains("amzn"))
+                e.groups.add("amzn")
+
+
+            if (group == "strife")
+                e.groups.add("ion10")
+
+
+            return e
 
         }
 

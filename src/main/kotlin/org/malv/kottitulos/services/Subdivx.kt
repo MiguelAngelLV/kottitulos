@@ -3,6 +3,7 @@ package org.malv.kottitulos.services
 import com.github.junrar.Archive
 import org.jsoup.Jsoup
 import org.malv.kottitulos.Episode
+import org.malv.kottitulos.containsAny
 import org.malv.kottitulos.pad
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -26,7 +27,7 @@ class Subdivx : SubtitleService {
 
 
         document.select("#buscador_detalle")
-                .filter { it.text().contains(episode.group, ignoreCase = true) }
+                .filter { it.text().containsAny(episode.groups, ignoreCase = true) }
 
                 .forEach {
 

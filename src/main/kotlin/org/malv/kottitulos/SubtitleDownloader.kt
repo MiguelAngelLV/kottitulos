@@ -20,14 +20,21 @@ class SubtitleDownloader {
 
     fun find(episode: Episode): Boolean {
 
+        log("Show: ${episode.show} ${episode.season}x${episode.episode} (${episode.groups})")
+
         for (service in services) {
 
             val subtitle = service.find(episode)
 
+
             if (subtitle != null) {
+                log("Subtitule downloaded from ${service.javaClass.simpleName}")
                 download(subtitle, episode.filename)
                 return true
             }
+
+
+            log("Subtitule not found in ${service.javaClass.simpleName}")
 
         }
 
