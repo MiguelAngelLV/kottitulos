@@ -1,7 +1,6 @@
 package org.malv.kottitulos.tests
 
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.fail
+import junit.framework.Assert.*
 import org.junit.Test
 import org.malv.kottitulos.Episode
 
@@ -19,7 +18,7 @@ class EpisodesTest {
         assertEquals("silicon valley", ep1.show)
         assertEquals(5, ep1.season)
         assertEquals(1, ep1.episode)
-        assert(ep1.groups.contains("tbs"))
+        assertTrue(ep1.groups.contains("tbs"))
 
 
 
@@ -29,7 +28,7 @@ class EpisodesTest {
         assertEquals("the last man on earth", ep2.show)
         assertEquals(4, ep2.season)
         assertEquals(9, ep2.episode)
-        assert(ep2.groups.contains("tbs"))
+        assertTrue(ep2.groups.contains("tbs"))
 
 
 
@@ -38,8 +37,8 @@ class EpisodesTest {
         assertEquals("final space", ep3.show)
         assertEquals(1, ep3.season)
         assertEquals(6, ep3.episode)
-        assert(ep3.groups.contains("amzn"))
-        assert(ep3.groups.contains("ntb"))
+        assertTrue(ep3.groups.contains("amzn"))
+        assertTrue(ep3.groups.contains("ntb"))
 
 
 
@@ -48,7 +47,7 @@ class EpisodesTest {
         assertEquals("future man", ep4.show)
         assertEquals(1, ep4.season)
         assertEquals(3, ep4.episode)
-        assert(ep4.groups.contains("hybris"))
+        assertTrue(ep4.groups.contains("hybris"))
 
 
 
@@ -57,7 +56,7 @@ class EpisodesTest {
         assertEquals("the big bang theory", ep5.show)
         assertEquals(11, ep5.season)
         assertEquals(19, ep5.episode)
-        assert(ep5.groups.contains("plutonium"))
+        assertTrue(ep5.groups.contains("plutonium"))
 
 
 
@@ -67,7 +66,7 @@ class EpisodesTest {
         assertEquals("the big bang theory", ep6.show)
         assertEquals(11, ep6.season)
         assertEquals(19, ep6.episode)
-        assert(ep6.groups.contains("plutonium"))
+        assertTrue(ep6.groups.contains("plutonium"))
         assertEquals("/path/to/file/The.Big.Bang.Theory.S11E19.1080p.HDTV.x264-PLUTONiUM", ep6.filename)
 
 
@@ -78,7 +77,15 @@ class EpisodesTest {
         assertEquals("izombie", ep7.show)
         assertEquals(4, ep7.season)
         assertEquals(10, ep7.episode)
-        assert(ep7.groups.contains("metcon"))
+        assertTrue(ep7.groups.contains("metcon"))
+
+        val ep8 = Episode.create("silicon.valley.s06e01.proper.1080p.web.h264-tbs.mkv") ?: return fail()
+        assertEquals("silicon valley", ep8.show)
+        assertEquals(6, ep8.season)
+        assertEquals(1, ep8.episode)
+        assertTrue(ep8.groups.contains("tbs"))
+
+
     }
 
 

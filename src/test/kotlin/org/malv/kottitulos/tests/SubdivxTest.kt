@@ -1,5 +1,6 @@
 package org.malv.kottitulos.tests
 
+import junit.framework.Assert
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.fail
 import org.junit.Test
@@ -47,6 +48,18 @@ class SubdivxTest {
         assert(subtitle1.contains('á'))
 
 
+        val episode2 = Episode.create("silicon.valley.s06e01.proper.1080p.web.h264-tbs.mkv") ?: return fail()
+
+
+        val subtitle2 = subdivx.find(episode2) ?: return fail()
+
+        assert(subtitle1.startsWith("1"))
+        assert(subtitle1.contains('¿'))
+        assert(subtitle1.contains('á'))
+
+
     }
+
+
 
 }

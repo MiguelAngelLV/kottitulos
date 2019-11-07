@@ -31,8 +31,9 @@ class Subdivx : SubtitleService {
 
                 .forEach {
 
-                    val downloads = it.select("a[target]")
-                    val subtitule = download(downloads.first().absUrl("href"))
+                    val downloads = it.previousElementSibling().selectFirst("a")
+                    val subtitule = download(downloads.absUrl("href"))
+
 
                     if (subtitule != null) return subtitule
 
@@ -45,8 +46,12 @@ class Subdivx : SubtitleService {
 
     fun download(download: String): String? {
 
+        val url = Jsoup.connect(download).get()
+                .selectFirst("a[href^=bajar]")
+                .absUrl("href")
 
-        val response = Jsoup.connect(download)
+
+        val response = Jsoup.connect(url)
                 .ignoreContentType(true)
                 .execute()
 
