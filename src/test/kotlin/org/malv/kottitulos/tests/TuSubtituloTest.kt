@@ -13,7 +13,7 @@ class TuSubtituloTest {
 
         val tusubtitulo = TuSubtitulo()
 
-        val episode1 = Episode("the big bang theory", 3, 11, "dimension")
+        val episode1 = Episode.create("shameless.us.s10e04.1080p.web.h264-tbs.mkv")!!
 
         val subtitle1 = tusubtitulo.find(episode1) ?: return fail()
 

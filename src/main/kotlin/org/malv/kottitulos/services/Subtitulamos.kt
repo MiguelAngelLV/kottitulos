@@ -6,16 +6,16 @@ import org.json.simple.parser.JSONParser
 import org.jsoup.Jsoup
 import org.malv.kottitulos.Episode
 import org.malv.kottitulos.containsAny
+import org.malv.kottitulos.pad
 
 
 class Subtitulamos : SubtitleService {
 
 
-
     override fun find(episode: Episode): String? {
 
         val query = Jsoup.connect("https://www.subtitulamos.tv/search/query")
-                .data("q", "${episode.show} ${episode.season}x${episode.episode}")
+                .data("q", episode.show)
                 .ignoreContentType(true)
                 .execute().body()
 
@@ -26,41 +26,32 @@ class Subtitulamos : SubtitleService {
             return null
 
         val show = shows.first() as JSONObject
-        val episodes = show["episodes"] as JSONArray
 
-        if (episodes.isEmpty())
-            return null
-
-        val result = episodes.first() as JSONObject
-
-        val id = result["id"] as Long
+        val id = show["id"] as Long
 
 
-        val details = Jsoup.connect("https://www.subtitulamos.tv/episodes/$id")
+        val season = Jsoup.connect("https://www.subtitulamos.tv/shows/$id/season/${episode.season}")
                 .get()
-                .select("#subtitle_details > div")
 
-        val spanish = details.indexOfFirst { it.text().contains("Español") }
 
-        if (spanish == -1)
-            return null
+        val subtitles = season.select(".episode:contains(${episode.season}x${episode.episode.pad(2)})")
 
-        val versions = details.subList(spanish, details.size - 1)
+
+        val versions = subtitles.select(".subtitle-language:contains(Español) ~ .subtitle ")
 
         val groupVersions = versions.filter {
-            it.select(".version_name").text().containsAny(episode.groups, true)
-            && it.select("a[href$=download]").isNotEmpty()
+            it.select(".version-name").text().containsAny(episode.groups, true)
+                    && it.select("a[href*=subtitles]").isNotEmpty()
         }
 
         if (groupVersions.isEmpty())
             return null
 
 
-        val url = groupVersions.first().select("a[href$=download]").first().absUrl("href")
+        val url = groupVersions.first().select("a[href*=subtitles]").first().absUrl("href")
 
         return Jsoup.connect(url).ignoreContentType(true).execute().charset("ISO-8859-1").body()
     }
-
 
 
 }

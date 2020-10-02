@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.4.10'
 
     repositories {
         mavenCentral()
@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile 'org.jsoup:jsoup:1.11.2'
+    compile 'org.jsoup:jsoup:1.13.1'
 
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0.1'
