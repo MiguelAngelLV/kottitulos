@@ -10,11 +10,11 @@ import java.sql.DriverManager
 
 class TuSubtitulo : SubtitleService {
 
+    var cacheUpdated = false
+
     lateinit var database: Connection
 
     init {
-
-
         createConnection()
     }
 
@@ -47,16 +47,34 @@ class TuSubtitulo : SubtitleService {
 
     private fun updateCache() {
 
-        database.prepareStatement("DELETE FROM tusubtitulo").execute()
+        if (cacheUpdated) return
+
+        cacheUpdated = true
+
+        val query = database.prepareStatement("SELECT id FROM tusubtitulo ORDER BY id DESC LIMIT 1")
+
+        val resultSet = query.executeQuery()
+
+        val max = if (resultSet.next()) resultSet.getInt("id") else 0
+
+
         val statement = database.prepareStatement("INSERT INTO tusubtitulo (name, id) VALUES (?, ?)")
 
         Jsoup.connect("https://www.tusubtitulo.com/series.php")
                 .get()
                 .select("[href^=/show/]")
                 .forEach {
-                    statement.setString(1, it.text().substringBeforeLast("(").trim().toLowerCase())
-                    statement.setString(2, it.attr("href").substringAfterLast("/"))
-                    statement.addBatch()
+
+                    statement.setString(1, it.text()
+                            .replace("(", "")
+                            .replace(")", "")
+                            .trim().toLowerCase())
+
+                    val id = it.attr("href").substringAfterLast("/").toInt()
+                    statement.setInt(2, id)
+
+                    if (id > max)
+                        statement.addBatch()
                 }
 
         statement.executeBatch()
@@ -70,11 +88,17 @@ class TuSubtitulo : SubtitleService {
         val directory = File("${System.getProperty("user.home")}${File.separator}.kottitulos")
         directory.mkdirs()
 
-        val file = directory.absolutePath  + File.separator + "tusubtitulo.db"
+        val file = directory.absolutePath + File.separator + "tusubtitulo.db"
         database = DriverManager.getConnection("jdbc:sqlite:$file")
 
         val statement = database.prepareStatement("CREATE TABLE IF NOT EXISTS tusubtitulo (name TEXT, id INTEGER)")
         statement.execute()
+
+
+
+
+
+
     }
 
     override fun find(episode: Episode): String? {
