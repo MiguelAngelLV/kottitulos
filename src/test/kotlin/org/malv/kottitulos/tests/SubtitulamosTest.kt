@@ -1,7 +1,6 @@
 package org.malv.kottitulos.tests
 
-import junit.framework.TestCase.assertNull
-import junit.framework.TestCase.fail
+import junit.framework.TestCase.*
 import org.junit.Test
 import org.malv.kottitulos.Episode
 import org.malv.kottitulos.services.Subtitulamos
@@ -31,10 +30,10 @@ class SubtitulamosTest {
 
 
 
-        val episode3 = Episode("izombie", 4, 10, "metcon")
+        val episode3 = Episode.create("Superstore.S05E12.720p.HDTV.x264-AVS.mkv") ?: return fail()
         val subtitle3 = subtitulamos.find(episode3)
 
-        assertNull(subtitle3)
+        assertNotNull(subtitle3)
 
 
     }

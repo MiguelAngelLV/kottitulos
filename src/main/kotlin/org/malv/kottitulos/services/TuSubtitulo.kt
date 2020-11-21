@@ -95,10 +95,6 @@ class TuSubtitulo : SubtitleService {
         statement.execute()
 
 
-
-
-
-
     }
 
     override fun find(episode: Episode): String? {
@@ -106,47 +102,36 @@ class TuSubtitulo : SubtitleService {
 
         val show = findShow(episode.show) ?: return null
 
-        val response = Jsoup.connect("https://www.tusubtitulo.com/ajax_loadShow.php")
-                .data("show", "$show")
-                .data("season", "${episode.season}")
-                .header("X-Requested-With", "XMLHttpRequest")
+        val response = Jsoup.connect("https://www.tusubtitulo.com/season/$show/${episode.season}")
                 .execute()
 
         val cookies = response.cookies()
-        val episodes = response
-                .parse().select("table:contains(${episode.season}x${episode.episode.pad(2)})")
+        val fragment = response.parse().selectFirst("table:contains(${episode.season}x${episode.episode.pad(2)})")
+                ?: return null
+        val versions = fragment.select("tr + tr")
 
-
-        if (episodes.isEmpty()) return null
-
-
-        val versions = episodes.select("tr + tr")
-
-        val version = versions.indexOfFirst { it.text().containsAny(episode.groups, true) }
-
-        if (version == -1) return null
-
-
-        for (i in version + 1 until versions.size) {
-            if (versions[i].text().contains("Español") && versions[i].select("a").isNotEmpty()) {
-                val url = versions[i].select("a").first().absUrl("href")
-
-                return Jsoup.connect(url)
-                        .referrer("https://www.tusubtitulo.com/show/$show")
-                        .cookies(cookies)
-                        .execute()
-                        .charset("ISO-8859-1")
-                        .body()
-
-            }
-
-            if (versions[i].text().contains("Versión"))
-                return null
+        val indexVersions = ArrayList<Int>()
+        versions.forEachIndexed { index, it ->
+            if (it.text().containsAny(episode.groups, true))
+                indexVersions.add(index)
         }
+
+        if (indexVersions.isEmpty()) return null
+
+
+        val code = fragment.selectFirst(".NewsTitle a").absUrl("href").substringAfter("episodes/").substringBefore("/")
 
 
         return null
 
+       /* val url = "https://www.tusubtitulo.com/updated/5/${code}/${version}"
+
+        return Jsoup.connect(url)
+                .referrer("https://www.tusubtitulo.com/show/$show")
+                .cookies(cookies)
+                .execute()
+                .charset("ISO-8859-1")
+                .body()*/
     }
 
 

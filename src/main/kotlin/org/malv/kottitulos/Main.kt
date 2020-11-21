@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
     val downloader = SubtitleDownloader()
 
     downloader.addService(Subtitulamos())
-    downloader.addService(TuSubtitulo())
+   // downloader.addService(TuSubtitulo())
     downloader.addService(Subdivx())
 
 

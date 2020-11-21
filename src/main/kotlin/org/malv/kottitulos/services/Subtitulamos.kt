@@ -37,11 +37,10 @@ class Subtitulamos : SubtitleService {
         val subtitles = season.select(".episode:contains(${episode.season}x${episode.episode.pad(2)})")
 
 
-        val versions = subtitles.select(".subtitle-language:contains(Español) ~ .subtitle ")
+        val versions = subtitles.select(".subtitle-language:contains(Español) ~ .subtitle .sub")
 
         val groupVersions = versions.filter {
-            it.select(".version-name").text().containsAny(episode.groups, true)
-                    && it.select("a[href*=subtitles]").isNotEmpty()
+            it.select(".version-name").text().containsAny(episode.groups, true)  && it.select("a[href*=subtitles]").isNotEmpty()
         }
 
         if (groupVersions.isEmpty())
