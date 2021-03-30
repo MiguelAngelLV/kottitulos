@@ -27,27 +27,33 @@ class Subtitulamos : SubtitleService {
 
         val show = shows.first() as JSONObject
 
-        val id = show["id"] as Long
+        val id = show["show_id"] as Long
 
 
-        val season = Jsoup.connect("https://www.subtitulamos.tv/shows/$id/season/${episode.season}")
-                .get()
+        val season = Jsoup.connect("https://www.subtitulamos.tv/shows/$id")
+            .followRedirects(true)
+            .get().select("#season-choices a")
+            .firstOrNull { it.text() == "${episode.season}" } ?: return null
 
 
-        val subtitles = season.select(".episode:contains(${episode.season}x${episode.episode.pad(2)})")
+
+        val subtitles = Jsoup.connect(season.absUrl("href"))
+            .get().select("#episode-choices a")
+            .firstOrNull { it.text() == "${episode.episode}" } ?: return null
 
 
-        val versions = subtitles.select(".subtitle-language:contains(Español) ~ .subtitle .sub")
+        val versions = Jsoup.connect(subtitles.absUrl("href"))
+            .get().select(".language-container + .language-container .version-container")
+
 
         val groupVersions = versions.filter {
-            it.select(".version-name").text().containsAny(episode.groups, true)  && it.select("a[href*=subtitles]").isNotEmpty()
+            it.select("p.bold").text().containsAny(episode.groups, true)
+        }.flatMap {
+            it.select(".version-buttons a[href$=download]")
         }
 
-        if (groupVersions.isEmpty())
-            return null
 
-
-        val url = groupVersions.first().select("a[href*=subtitles]").first().absUrl("href")
+        val url = groupVersions.firstOrNull()?.absUrl("href") ?: return null
 
         return Jsoup.connect(url).ignoreContentType(true).execute().charset("ISO-8859-1").body()
     }
